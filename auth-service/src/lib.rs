@@ -1,12 +1,24 @@
 use std::error::Error;
 
 use axum::{
+    routing::{
+        //get,
+        post,
+    },
     serve::Serve,
     Router,
     // response::Html,
-    // routing::get,
 };
 use tower_http::services::ServeDir;
+
+use routes::{
+    login,
+    logout,
+    signup,
+    verify_2fa,
+    verify_token,
+};
+mod routes;
 
 // This struct encapsulates our application-related logic.
 pub struct Application {
@@ -28,7 +40,12 @@ impl Application {
 
         // Move the Router definition from `main.rs` to here.
         let router = Router::new()
-            .nest_service("/", ServeDir::new("assets"));
+            .nest_service("/", ServeDir::new("assets"))
+            .route("/signup", post(signup))
+            .route("/login", post(login))
+            .route("/verify-2fa", post(verify_2fa))
+            .route("/logout", post(logout))
+            .route("/verify-token", post(verify_token));
 
         // Application is running on port 3000:
         // ❯ sudo lsof -i :3000
