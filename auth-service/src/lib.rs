@@ -11,14 +11,7 @@ use axum::{
 };
 use tower_http::services::ServeDir;
 
-use routes::{
-    login,
-    logout,
-    signup,
-    verify_2fa,
-    verify_token,
-};
-mod routes;
+pub mod routes;
 
 // This struct encapsulates our application-related logic.
 pub struct Application {
@@ -41,11 +34,11 @@ impl Application {
         // Move the Router definition from `main.rs` to here.
         let router = Router::new()
             .nest_service("/", ServeDir::new("assets"))
-            .route("/signup", post(signup))
-            .route("/login", post(login))
-            .route("/verify-2fa", post(verify_2fa))
-            .route("/logout", post(logout))
-            .route("/verify-token", post(verify_token));
+            .route("/signup", post(routes::signup))
+            .route("/login", post(routes::login))
+            .route("/verify-2fa", post(routes::verify_2fa))
+            .route("/logout", post(routes::logout))
+            .route("/verify-token", post(routes::verify_token));
 
         // Application is running on port 3000:
         // ❯ sudo lsof -i :3000

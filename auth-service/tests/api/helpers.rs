@@ -9,11 +9,12 @@ pub struct TestApp {
 impl TestApp {
     pub async fn new() -> Self {
         let localhost = "127.0.0.1";
-        let app = Application::build(&localhost, 0)
+        let all_ports: i32 = 0;
+        let app = Application::build(&localhost, all_ports)
             .await
             .expect("Failed to build app");
 
-        let address: String = format!("http://{}", app.address.clone());
+        let address: String = format!("http://{}", &app.address);
 
         // Run the auth service in a separate async task
         // to avoid blocking the main test thread. 
@@ -28,8 +29,9 @@ impl TestApp {
     }
 
     pub async fn get_root(&self) -> reqwest::Response {
+        let url: String = format!("{}/", &self.address);
         self.http_client
-            .get(&format!("{}/", &self.address))
+            .get(&url)
             .send()
             .await
             .expect("Failed to execute request.")
@@ -39,8 +41,9 @@ impl TestApp {
     where
         Body: serde::Serialize,
     {
+        let url: String = format!("{}/signup", &self.address);
         self.http_client
-            .post(&format!("{}/signup", &self.address))
+            .post(&url)
             .json(body)
             .send()
             .await
@@ -48,38 +51,33 @@ impl TestApp {
     }
 
     pub async fn post_login(&self) -> reqwest::Response {
-        self.http_client
-            .post(&format!("{}/login", &self.address))
-            .send()
-            .await
-            .expect("Failed to execute request.")
+        let url: String = format!("{}/login", &self.address); 
+        self.post(&url, "login").await
     }
 
     pub async fn post_logout(&self) -> reqwest::Response {
-        self.http_client
-            .post(format!("{}/logout", &self.address))
-            .send()
-            .await
-            .expect("Failed to execute request.")
+        let url: String = format!("{}/logout", &self.address);
+        self.post(&url, "logout").await
     }
 
     pub async fn post_verify_2fa(&self) -> reqwest::Response {
-        self.http_client
-            .post(format!("{}/verify-2fa", &self.address))
-            .send()
-            .await
-            .expect("Failed to execute request.")
+        let url: String = format!("{}/verify-2fa", &self.address);
+        self.post(&url, "verify-2fa").await
     }
 
     pub async fn post_verify_token(&self) -> reqwest::Response {
+        let url: String = format!("{}/verify-token", &self.address);
+        self.post(&url, "verify-token").await
+    }
+
+    pub async fn post(&self, url: &str, post_type: &str) -> reqwest::Response {
         self.http_client
-            .post(format!("{}/verify-token", &self.address))
+            .post(url)
             .send()
             .await
-            .expect("Failed to execute request.")
+            .expect(&format!("Failed to execute {} request.", post_type))
     }
 }
-
 
 
 pub fn get_random_email() -> String {
