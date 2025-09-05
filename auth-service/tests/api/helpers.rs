@@ -14,7 +14,7 @@ impl TestApp {
             .await
             .expect("Failed to build app");
 
-        let address: String = format!("http://{}", app.address.clone());
+        let address: String = format!("http://{}", &app.address);
 
         // Run the auth service in a separate async task
         // to avoid blocking the main test thread. 
