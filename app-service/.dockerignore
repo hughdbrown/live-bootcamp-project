@@ -2,3 +2,7 @@
 target/
 tests/
 Dockerfile
+Cargo.lock
+.git/
+.gitignore
+.cargo/
