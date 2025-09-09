@@ -1,0 +1,11 @@
+# Rust build artifacts
+/target/
+
+# Cargo.lock for executables, but keep for libraries
+# If your project is an executable, you can uncomment the following line:
+Cargo.lock
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
