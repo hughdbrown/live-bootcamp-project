@@ -91,16 +91,8 @@ jobs:
         username: root
         password: ${{ secrets.DROPLET_PASSWORD }}
         script: |
-          echo '+ script'
           cd ~
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
-          echo '+ docker compose down'
           docker compose down
-          echo '- docker compose down'
-          echo '+ docker compose pull'
           docker compose pull
-          echo '- docker compose pull'
-          echo '+ docker compose up'
           docker compose up -d
-          echo '- docker compose up'
-          echo '- script'
