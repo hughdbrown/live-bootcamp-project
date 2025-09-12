@@ -82,7 +82,9 @@ jobs:
       run: sudo apt-get install sshpass
 
     - name: Copy compose.yml to droplet
+      run: echo '+ compose.yml'
       run: sshpass -v -p '${{ secrets.DROPLET_PASSWORD }}' scp -o StrictHostKeyChecking=no compose.yml root@${{ vars.DROPLET_IP }}:~
+      run: echo '- compose.yml'
 
     - name: Deploy
       uses: appleboy/ssh-action@master
@@ -91,8 +93,16 @@ jobs:
         username: root
         password: ${{ secrets.DROPLET_PASSWORD }}
         script: |
+          echo '+ script'
           cd ~
           export AUTH_SERVICE_IP=${{ vars.DROPLET_IP }}
+          echo '+ docker compose down'
           docker compose down
+          echo '- docker compose down'
+          echo '+ docker compose pull'
           docker compose pull
+          echo '- docker compose pull'
+          echo '+ docker compose up'
           docker compose up -d
+          echo '- docker compose up'
+          echo '- script'
