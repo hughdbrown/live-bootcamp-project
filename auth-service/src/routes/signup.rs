@@ -14,7 +14,7 @@ pub struct SignupRequest {
 }
 
 pub async fn signup(
-    Json(_request): Json<SignupRequest>, // _request is unused
+    Json(request): Json<SignupRequest>, // _request is unused
 ) -> impl IntoResponse {
     StatusCode::OK.into_response()
 }
