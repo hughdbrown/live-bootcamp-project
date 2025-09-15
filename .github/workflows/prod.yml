@@ -10,14 +10,22 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        #- build: pinned
+        #  os: ubuntu-latest
+        #  rust: 1.89.0
+        - build: stable
+          os: ubuntu-latest
+          rust: stable
 
     steps:
-      # Checkout code from the repository
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Checkout code from the repository
+      uses: actions/checkout@v4
 
-      # Cache dependencies to speed up build times
-    - name: Cache dependencies
+    - name: Cache dependencies to speed up build times
       uses: actions/cache@v3
       with:
         path: |
@@ -27,10 +35,14 @@ jobs:
           auth-service/target/
         key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
         restore-keys: ${{ runner.os }}-cargo-
+      #uses: Swatinem/rust-cache@v2
 
     - name: Install Rust
-      run: rustup update stable && rustup default stable
-
+    #  run: rustup update stable && rustup default stable
+      uses: dtolnay/rust-toolchain@stable
+      with:
+        toolchain: ${{ matrix.rust }}
+  
     - name: Build and test app-service code
       working-directory: ./app-service
       run: |
@@ -70,7 +82,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v1
